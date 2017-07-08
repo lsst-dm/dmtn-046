@@ -2115,7 +2115,9 @@ significant (single) reduce step.
 | Average Execution time (sec)   | 31.93    | 188.79   | 22.96    | 30.79    | 22.52    | 3595.44   |
 +--------------------------------+----------+----------+----------+----------+----------+-----------+
 
-.. figure:: _static/HiveScalingPlot.jpg
+.. figure:: ./_static/HiveScalingPlot.jpg
+   :target: ./_static/HiveScalingPlot.jpg
+   :alt: Hive scaling plot
 
 Experimentation with Hive was done by Bipin Suresh
 

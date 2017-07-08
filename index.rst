@@ -322,7 +322,7 @@ Objectivity/DB is not the right choice for LSST.
 
 InterSystems Caché
 `has been chosen as <http://www.intersystems.com/library/library-item/european-space-agency-chooses-intersystems-cach-database-for-gaia-mission-to-map-milky-way/>`_
-the underlying system for the European Gaia project :cite:`Zicaro:2011:ODBMS` :cite:`2016A&A...595A...1G`,
+the underlying system for the European Gaia project :cite:`Zicaro:2011:ODBMS` :cite:`2016A&A..595A..1G`,
 based on our limited knowledge, so far
 the Gaia project focused primarily on using Caché for ingest-related
 aspects of the system, and did not have a chance to research analytical

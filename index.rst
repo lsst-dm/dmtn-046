@@ -108,7 +108,7 @@ solution once they mature.
 
 Further, our research led to creation a new, now
 internationally-recognized conference series, `Extremely Large Databases
-(XLDB) <http://xldb.org>`_. As we continue leading the `XLDB`_ effort, it
+(XLDB) <http://www.xldb.org>`_. As we continue leading the `XLDB`_ effort, it
 gives us a unique opportunity to reach out to a wide range of
 high-profile organizations dealing with large data sets, and raise
 awareness of the LSST needs among researchers and developers working on
@@ -155,7 +155,7 @@ commercially supported by Cloudera, `Hortonworks`_ [Yahoo] and
 
 We have `experimented with Hadoop (0.20.2) and Hive (0.7.0) in mid 2010
 using a 1 billion row USNO-B data set on a 64 node cluster
-<http://dev.lsstcorp.org/trac/wiki/db/Hive/Experiment>`_. Common LSST
+<https://dev.lsstcorp.org/trac/wiki/db/HiveExperiment>`_. Common LSST
 queries were tested, ranging from low-volume type (such as finding a
 single object, selecting objects near other know object), through
 high-volume ones (full table scans) to complex queries involving joins
@@ -375,7 +375,7 @@ their institution at low licensing and maintenance cost.
 
 Columnar stores are starting to gain in popularity. Although `the list
 is already relatively large
-<http://en.wikipedia.org/wiki/Column-oriented_DBMS>`_, the number of
+<https://en.wikipedia.org/wiki/Column-oriented_DBMS>`_, the number of
 choices worth considering is relatively small. Today's most popular
 commercial choice is HP Vertica, and the open source solutions include
 MonetDB and Calpont's InfiniDB. The latter also implements shared
@@ -752,7 +752,7 @@ Lack of some features that are at the core of every database system
 should not be a surprise – MR systems are simply built with different
 needs in mind, and even `the Hadoop website officially states that
 *Hadoop is not a substitute for a database*
-<http://wiki.apache.org/hadoop/HadoopIsNot>`_. Nethertheless, many have
+<https://wiki.apache.org/hadoop/HadoopIsNot>`_. Nethertheless, many have
 attempted to compare Hadoop performance with databases. According to
 some publications and feedback from Hadoop users we talked to, Hadoop is
 about an order of magnitude more wasteful of hardware than a e.g. DB2
@@ -892,7 +892,7 @@ architecture is in many ways similar to our baseline architecture
 architecture, auto fail over, replicating hot spots). Having said that,
 we do not have access to the source code, even though Google is an LSST
 collaborator, and there is `no corresponding open source alternative to
-date <http://www.quora.com/How-will-Dremel-change-future-Hadoop-releases>`_.
+date <https://www.quora.com/How-will-Googles-Dremel-change-future-Hadoop-releases>`_.
 
 .. _mr-tenzing:
 
@@ -1312,9 +1312,9 @@ The architecture of NPS consists of two tiers: a SMP host and hundreds
 of massively parallel blades, called Snippet Processing Units (SPU).
 Each SPU consists of a CPU, memory, disk drive and an FPGA chip that
 filters records as they stream off the disk. See
-http://www.netezza.com/products/index.cfm for more information.
+https://www-01.ibm.com/software/data/netezza/ for more information.
 
-According to some rumours, see eg
+According to some rumours, see e.g.
 http://www.dbms2.com/2009/09/03/teradata-and-netezza-are-doing-mapreduce-too/,
 Netezza is planning to support map/reduce.
 
@@ -1555,7 +1555,7 @@ keeping track of available nodes, allowing nodes to be added/removed
 dynamically. Task management involves executing tasks on the nodes.
 
 Detailed requirements what we need are captured at:
-http://dev.lsstcorp.org/trac/wiki/dbDistributedFrameworkRequirements
+https://dev.lsstcorp.org/trac/wiki/db/Qserv/DistributedFrameworkRequirements
 
 .. _sec-gearman:
 
@@ -1643,25 +1643,25 @@ Leading database researchers
 - M Kersten
 
 
-.. _XRootD: http://xrootd.slac.stanford.edu
+.. _XRootD: http://xrootd.org
 
-.. _XLDB: http://xldb.org
+.. _XLDB: http://www.xldb.org
 
-.. _Hortonworks: http://www.hortonworks.com/
+.. _Hortonworks: https://hortonworks.com/
 
-.. _Hadapt: http://hadapt.com
+.. _Hadapt: http://www.teradata.com/products-and-services/Presto/Presto-Download
 
-.. _Hive: http://wiki.apache.org/hadoop/Hive
+.. _Hive: https://wiki.apache.org/hadoop/Hive
 
-.. _HBase: http://hadoop.apache.org/hbase/
+.. _HBase: http://hbase.apache.org/
 
-.. _Zookeeper: website: http://zookeeper.sourceforge.net/
+.. _Zookeeper: http://zookeeper.sourceforge.net/
 
 .. _Dryad: http://research.microsoft.com/en-us/projects/dryad/
 
 .. _Cassandra: http://cassandra.apache.org/
 
-.. _MongoDB: http://www.mongodb.org/
+.. _MongoDB: https://www.mongodb.com/
 
 .. _Drizzle: http://drizzle.org/
 
@@ -1674,7 +1674,7 @@ References
 
 .. bibliography:: bibliography.bib
    :encoding: latex+latin
-   :style: plain
+   :style: lsst_aa
 
 .. note::
 

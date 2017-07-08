@@ -92,7 +92,7 @@ meeting most of the key requirements will be available well before LSST
 production starts. In particular, there are two very promising
 by-products of our research:
 
-- we co-initiated, co-founded, and helped bootstrap SciDB – a new
+- we co-initiated :cite:`2008becla-dsj2`, co-founded, and helped bootstrap SciDB – a new
   open source shared nothing database system, and
 
 - we pushed the development of MonetDB, an open source columnar
@@ -124,20 +124,21 @@ Map/Reduce-based and NoSQL Solutions
 
 Map/Reduce is a software framework to support distributed computing on
 large data sets on clusters of computers. Google’s implementation
-[Dean04]_, believed to be the most advanced, is proprietary, and in
+:cite:`Dean:2008:MSD:1327452.1327492`, believed to be the most advanced, is proprietary, and in
 spite of Google being one of the LSST collaborators, we were unable to
 gain access to any of their MR software or infrastructure. Additional
-Google-internal MR-related projects include BigTable [Bigtable06]_,
-Chubby [Chubby]_, and Sawzall [Pike]_.  BigTable addresses the need for rapid
+Google-internal MR-related projects include BigTable :cite:`Chang:2008:BDS:1365815.1365816`,
+Chubby :cite:`Burrows:2006:CLS:1298455.1298487`, and Sawzall :cite:`Pike:2005:SP:962135`.
+BigTable addresses the need for rapid
 searches through a specialized index; Chubby adds transactional support;
 and Sawzall is a procedural language for expressing queries. Most of
 these solutions attempt to add partial database-like features such as
 schema catalog, indexes, and transactions. The most recent MR
-developments at Google are Dremel [Dremel]_ - an interactive ad-hoc query
+developments at Google are Dremel :cite:`Melnik:2010:DIA:1920841.1920886` - an interactive ad-hoc query
 system for analysis of read-only data, and Tenzing – a full SQL
-implementation on the MR Framework [Chattopadhyay11]. [#]_
+implementation on the MR Framework :cite:`Chattopadhyay:2011:37200`. [#]_
 
-.. [#] Through our `XLDB`_ efforts, Google has provided us with a
+.. [#] Through our `XLDB`_ efforts, Google provided us with a
    preprint of a Tenzing manuscript accepted for publication at VLDB 2011.
 
 In parallel to the closed-source systems at Google, similar open-source
@@ -169,7 +170,7 @@ Independently, Microsoft developed a system called `Dryad`_, geared
 towards executing distributed computations beyond “flat” *Map* and
 *Reduce*, along with a corresponding language called *LINQ*. Due to its
 strong dependence on Windows OS and limited availability, use of `Dryad`_
-outside of Microsoft is very limited. Based on news reports [Zdnet]_,
+outside of Microsoft is very limited. Based on news reports :cite:`Foley:2011:Zdnet`,
 Microsoft dropped support for `Dryad`_ back in late 2011.
 
 Further, there is a group of new emerging solutions often called as
@@ -225,11 +226,11 @@ partitions, limiting the potential performance of pairwise analysis.
 Microsoft SQL Server offers Distributed Partitioned Views, which provide
 much of the functionality of a shared-nothing parallel database by
 federating multiple tables across multiple servers into a single view.
-This technology is used in the interesting GrayWulf project [Szalay08]_
-[Simmhan09]_ which is designed to host observational data consisting of
-Pan-STARRS PS1 [Jedicke06]_ astronomical detections and summary information
+This technology is used in the interesting GrayWulf project :cite:`Szalay:2008:Graywulf`
+:cite:`Simmhan:2009:4755781` which is designed to host observational data consisting of
+Pan-STARRS PS1 :cite:`2007IAUS..236..341J` astronomical detections and summary information
 about the objects that produced them. GrayWulf partitions observation
-data across nodes by “zones” [Gray07]_, but these partitions cannot overlap.
+data across nodes by “zones” :cite:`Gray:2006:Zones`, but these partitions cannot overlap.
 Fault tolerance is built in by having three copies of the data, with one
 undergoing updates – primarily appending new detections – and the other
 two in a hot/warm relationship for failover. GrayWulf has significant
@@ -244,7 +245,7 @@ The MPP database is ideal for the LSST database architecture.
 Unfortunately, the only scalable, proven off-the-shelf solutions are
 commercial and expensive: Teradata, Greenplum. Both systems are (or
 recently were) behind today world's largest production database systems
-at places such as eBay [dbms209]_ [dbms210]_ and Walmart [eweek04]_.
+at places such as eBay :cite:`Monash:2009:ebay` :cite:`Monash:2010:ebay` and Walmart :cite:`Schuman:2004:eWeek`.
 IBM's DB2 “parallel edition”, even though it implements a shared-nothing
 architecture since mid-1990 focuses primarily on supporting unstructured
 data (XML), not large scale analytics.
@@ -263,9 +264,9 @@ it, the main cons include limited choices of partitioning types (hash
 partitioning only), lack of provisions for efficient near neighbor
 joins, poor stability and lack of good documentation.
 
-SciDB is the only parallel open source DBMS currently available on the
+SciDB :cite:`2009:Cudre-Mauroux:DSS:1687553.1687584` is the only parallel open source DBMS currently available on the
 market. It is a columnar, shared-nothing store based on an array data
-model. The project has been inspired by the LSST needs [scidb]_, and the
+model. The project has been inspired by the `LSST needs <http://web.archive.org/web/20120731061725/www.scidb.org/about/history.php>`_, and the
 LSST Database team is continuously in close communication with the SciDB
 developers. SciDB’s architectural features of chunking large arrays into
 overlapping chunks and distributing these chunks across a shared nothing
@@ -302,7 +303,7 @@ Object-oriented solutions
 The object-oriented database market is very small, and the choices are
 limited to a few small proprietary solutions, including Objectivity/DB
 and InterSystems Caché. Objectivity/DB was used by the BaBar experiment
-in 1999 – 2002, and the BaBar database reached a petabyte [Becla05]_. The
+in 1999 – 2002, and the BaBar database reached a petabyte :cite:`DBLP:conf/cidr/BeclaW05`. The
 members of LSST database team, being the former members of the BaBar
 database team are intimately familiar with the BaBar database
 architecture. The Objectivity/DB was used primarily as a simple data
@@ -311,8 +312,10 @@ in custom, user code. Given that, combining with the challenges related
 to porting and debugging commercial system led as to a conclusion
 Objectivity/DB is not the right choice for LSST.
 
-InterSystems Caché has been chosen as the underlying system for the
-European Gaia project [25, 26], based on our limited knowledge, so far
+InterSystems Caché
+`has been chosen as <http://www.intersystems.com/library/library-item/european-space-agency-chooses-intersystems-cach-database-for-gaia-mission-to-map-milky-way/>`_
+the underlying system for the European Gaia project :cite:`Zicaro:2011:ODBMS` :cite:`2016A&A...595A...1G`,
+based on our limited knowledge, so far
 the Gaia project focused primarily on using Caché for ingest-related
 aspects of the system, and did not have a chance to research analytical
 capabilities of Caché at scale.
@@ -324,7 +327,7 @@ Row-based vs columnar stores
 
 Row-based stores organize data on disk as rows, while columnar store –
 as columns. Column-store databases emerged relatively recently, and are
-based on the C-store work [Stonebaker05]_. By operating on columns
+based on the C-store work :cite:`Stonebraker:2005:CCD:1083592.1083658`. By operating on columns
 rather than rows, they are able to retrieve only the columns required
 for a query and greatly compress the data within each column. Both
 reduce disk I/O and hence required hardware by a significant factor for
@@ -345,7 +348,7 @@ store.
 
 Nevertheless, a column store could still be more efficient. Work done at
 Google (using Dremel) has claimed that “the crossover point often lies
-at dozens of fields but it varies across data sets” [Dremel]_. In our case,
+at dozens of fields but it varies across data sets” :cite:`Melnik:2010:DIA:1920841.1920886`. In our case,
 the most frequently accessed table: Object, will have over “20 dozens”
 columns. The Source, DiaObject, and DiaSource tables will each have
 about 4 dozen columns. These could be wide enough that all
@@ -378,7 +381,8 @@ is already relatively large
 <https://en.wikipedia.org/wiki/Column-oriented_DBMS>`_, the number of
 choices worth considering is relatively small. Today's most popular
 commercial choice is HP Vertica, and the open source solutions include
-MonetDB and Calpont's InfiniDB. The latter also implements shared
+MonetDB :cite:`Ivanova:2007:4274958` :cite:`DBLP:journals/debu/IdreosGNMMK12`
+and Calpont's InfiniDB. The latter also implements shared
 nothing MPP, however the multi-server version is only available as part
 of the commercial edition.
 
@@ -390,7 +394,7 @@ We are working closely with the MonetDB team, including the main
 architect of the system, Martin Kersten and two of his students who
 worked on porting MonetDB to meet LOFAR database needs. In 2011 the
 MonetDB team has run some basic tests using astronomical data (USNOB as
-well as our DC3b-PT1.1 data set). During the course of testing our
+well as our DC3b-PT1.1 data set :cite:`Document-9044`). During the course of testing our
 common queries they implemented missing features such as support for
 user defined functions, and are actively working on further extending
 MonetDB to build remaining missing functionality, in particular ability
@@ -794,7 +798,7 @@ HBase
 -----
 
 `HBase`_ is a column-oriented structured storage modeled after Google's
-Bigtable [Bigtable06]_, and built on top of the Hadoop HDFS. It is good
+Bigtable :cite:`Chang:2008:BDS:1365815.1365816`, and built on top of the Hadoop HDFS. It is good
 at incremental updates and column key lookups, however, similarly to
 plain MR, it offers no mechanism to do joins – a typical solution used
 by most users is to denormalize data. `HBase`_ is becoming increasingly
@@ -821,7 +825,7 @@ Other Hadoop-related Systems
 ----------------------------
 
 Other systems build for Hadoop include `Zookeeper`_ – a service for
-coordinating Hadoop's processes (ala Google's Chubby [Chubby]_) , and
+coordinating Hadoop's processes (ala Google's Chubby :cite:`Burrows:2006:CLS:1298455.1298487`) , and
 Simon – a cluster and application monitoring tool. Simon is similar to
 Ganglia, except it has more/better aggregation.
 
@@ -830,7 +834,7 @@ Ganglia, except it has more/better aggregation.
 Dryad
 -----
 
-`Dryad`_ [Dryad07]_ is a system developed by Microsoft Research for executing
+`Dryad`_ :cite:`Isard:2007:DDD:1272996.1273005` is a system developed by Microsoft Research for executing
 distributed computations. It supports a more general computation model
 than MR in that it can execute graphs of operations, using so called
 Directed Acyclic Graph (DAG). It is somewhat analogous to the MR model
@@ -877,7 +881,7 @@ filesystem for use with the system. Internally, Microsoft uses the
 not available in the academic release. Instead there are bindings for
 NTFS and SQL Server.
 
-Microsoft dropped supporting `Dryad`_ back in late 2011 [Zdnet]_.
+Microsoft dropped supporting `Dryad`_ back in late 2011 :cite:`Foley:2011:Zdnet`.
 
 .. _mr-dremel:
 
@@ -885,7 +889,7 @@ Dremel
 ------
 
 Dremel is a scalable, interactive ad-hoc query system for analysis of
-read-only data, implemented as an internal project at Google [Dremel]_.
+read-only data, implemented as an internal project at Google :cite:`Melnik:2010:DIA:1920841.1920886`.
 Information about Dremel has been made available in July 2010. Dremel's
 architecture is in many ways similar to our baseline architecture
 (executing query in parallel on many nodes in shared nothing
@@ -1042,12 +1046,12 @@ allegedly there are some issues with it.
 
 Up until recently, Greenplum powered one of the largest (if not the
 largest) database setups: eBay was using it to manage 6.5 petabytes of
-data on a 96-node cluster [dbms209]_. We are in close contact with the
+data on a 96-node cluster :cite:`Monash:2009:ebay`. We are in close contact with the
 key eBay developers of this system, including Oliver Ratzesberger.
 
 We are in contact with the Greenplum CTO: Luke Lonergan.
 
-08/28/2008: Greenplum announced supporting MapReduce [Greenplum]_.
+08/28/2008: Greenplum announced supporting MapReduce :cite:`Waas:2009:97836420342207`.
 
 Acquired by EMC in July 2010.
 
@@ -1465,8 +1469,7 @@ dual power supplies. However, servers are unable to recover from
 *storage* node failures, thought a different replica may be used. The
 only way to distribute data across nodes is by hashing; the system
 relies on replicating *dimension* tables. [the above is based on the
-talk we attended:
-http://wiki.esi.ac.uk/w/files/5/5c/Dyke-Details_of_Project_Madison-1.pdf]
+talk we attended :cite:`Dyke:2009:Madison`]
 
 Cons: It is proprietary, relies on expensive hardware (appliance), and
 it ties users to the Microsoft OS.
@@ -2197,7 +2200,7 @@ Leading database researchers
 .. _Hadoop: http://hadoop.apache.org/
 
 References
-----------
+==========
 
 .. bibliography:: bibliography.bib
    :encoding: latex+latin

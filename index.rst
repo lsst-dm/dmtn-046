@@ -1429,7 +1429,7 @@ MySQL.
 
 Also, during these tests we uncovered that PostgreSQL requires
 dump/reload of all tables for each major data release (once per year),
-see http://www.postgresql.org/support/versioning. The PostgreSQL
+see https://www.postgresql.org/support/versioning. The PostgreSQL
 community believes this is unlikely to change in the near future. This
 is probably the main show-stopper preventing us from adapting
 PostgreSQL.
@@ -1466,7 +1466,7 @@ dual power supplies. However, servers are unable to recover from
 only way to distribute data across nodes is by hashing; the system
 relies on replicating *dimension* tables. [the above is based on the
 talk we attended:
-http://wiki.esi.ac.uk/w/files/5/5c/Dyke-Details\_of\_Project\_Madison-1.pdf]
+http://wiki.esi.ac.uk/w/files/5/5c/Dyke-Details_of_Project_Madison-1.pdf]
 
 Cons: It is proprietary, relies on expensive hardware (appliance), and
 it ties users to the Microsoft OS.
@@ -1491,7 +1491,7 @@ database player.
 
 Cons: proprietary.
 
-.. _terradata:
+.. _teradata:
 
 Teradata
 --------
@@ -1505,7 +1505,7 @@ The main disadvantage of Teradata is very high cost.
 We are in close contact with Steve Brobst, acting as Teradata CTO, and
 key database developers at eBay.
 
-.. _teradata:
+.. _vertica:
 
 Vertica
 -------

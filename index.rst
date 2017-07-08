@@ -1020,6 +1020,12 @@ developers, including Brian Aker (the chief architect), and most
 developers and users present at the `Drizzle`_ developers meeting in April
 2008.
 
+.. note::
+
+  In 2017 Drizzle is no longer being developed:
+  https://en.wikipedia.org/wiki/Drizzle_(database_server) and
+  the Drizzle web site no longer operates.
+
 .. _sec-greenplum:
 
 Greenplum
@@ -1186,15 +1192,7 @@ differ from LSST's needs.) MySQL's optimizer used be below-average,
 however it is slowly catching up, especially the MariaDB version.
 
 We have run many, many performance tests with MySQL. These are
-documented in trac in various places, many of them on these four pages:
-
-- http://dev.lsstcorp.org/trac/wiki/dbSpatialJoinPerf
-
-- http://dev.lsstcorp.org/trac/wiki/dbBuildSubPart
-
-- http://dev.lsstcorp.org/trac/wiki/dbSubPartOverhead
-
-- http://dev.lsstcorp.org/trac/wiki/DbStoringRefCat
+documented in :cite:`DMTN-048`.
 
 We are well plugged into the MySQL community, we attended all MySQL User
 Conferences in the past 5 years, and talked to many MySQL developers,
@@ -1657,13 +1655,13 @@ Leading database researchers
 
 .. _Zookeeper: http://zookeeper.sourceforge.net/
 
-.. _Dryad: http://research.microsoft.com/en-us/projects/dryad/
+.. _Dryad: https://en.wikipedia.org/wiki/Dryad_(programming)
 
 .. _Cassandra: http://cassandra.apache.org/
 
 .. _MongoDB: https://www.mongodb.com/
 
-.. _Drizzle: http://drizzle.org/
+.. _Drizzle: https://en.wikipedia.org/wiki/Drizzle_(database_server)
 
 .. _SybaseIQ: http://www.sybase.com/products/datawarehousing/sybaseiq
 

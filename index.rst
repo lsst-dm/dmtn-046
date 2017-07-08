@@ -70,7 +70,7 @@ and others.
 The Research
 ------------
 
-To decide which technology best fits the LSST requirements, we did an
+To decide which technology best fits the LSST requirements :cite:`LPM-17`, we did an
 extensive market research and analyses, reviewed relevant literature,
 and run appropriate stress-tests for selected “promising” candidates,
 focusing on weak points and the most uncertain aspects. Market research

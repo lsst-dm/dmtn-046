@@ -153,9 +153,9 @@ solutions is adding database-features on top of MR. Hadoop is
 commercially supported by Cloudera, `Hortonworks`_ [Yahoo] and
 `Hadapt`_.
 
-We have `experimented with Hadoop (0.20.2) and Hive (0.7.0) in mid 2010
+We have experimented with Hadoop (0.20.2) and Hive (0.7.0) in mid 2010
 using a 1 billion row USNO-B data set on a 64 node cluster
-<https://dev.lsstcorp.org/trac/wiki/db/HiveExperiment>`_. Common LSST
+(see :ref:`experiments-on-hive-trac` for more details). Common LSST
 queries were tested, ranging from low-volume type (such as finding a
 single object, selecting objects near other know object), through
 high-volume ones (full table scans) to complex queries involving joins
@@ -1579,6 +1579,533 @@ approach to arguments and results, which would mean that the query
 service would need to implement its own side transmission channel or
 potentially flood the `Gearman`_ coordinator with bulky results.
 
+.. _experiments-on-hive-trac:
+
+Experiments on Hive
+===================
+
+This section\ [*]_ discusses an evaluation of the Hive data warehouse
+infrastructure for LSST database needs. All experimentation and analysis
+done by Bipin Suresh in mid-2010.
+
+Background
+----------
+
+`Hive`_ is a data warehouse built upon Hadoop. It defines a SQL-like query
+language called QL which allows for queries on structured data. Since it
+is built on top of `Hadoop`_, developers can leverage the Map-Reduce
+framework to define and perform more complicated analysis by plugging in
+their own custom mappers and reducers.
+
+To get Hive running, you need to first have a working version of Hadoop.
+
+Test Conditions
+---------------
+
+Software configuration
+~~~~~~~~~~~~~~~~~~~~~~
+
+-  Hive 0.7.0
+-  Hadoop 0.20.2
+
+Schema
+~~~~~~
+
+We have used a reduced Object schema based on USNO-B for testing
+purposes. For the final schema that we will be using, please check out
+the documentation here:
+http://ls.st/8g4
+
+::
+
+    hive> desc object;
+
++------------+--------+
+| id         | int    |
++------------+--------+
+| ra         | float  |
++------------+--------+
+| decl       | float  |
++------------+--------+
+| pm_ra      | int    |
++------------+--------+
+| pm_raerr   | int    |
++------------+--------+
+| pm_decl    | int    |
++------------+--------+
+| pm_declerr | int    |
++------------+--------+
+| epoch      | float  |
++------------+--------+
+| bmag       | float  |
++------------+--------+
+| bmagf      | int    |
++------------+--------+
+| rmag       | float  |
++------------+--------+
+| rmagf      | int    |
++------------+--------+
+| bmag2      | float  |
++------------+--------+
+| bmagf2     | int    |
++------------+--------+
+| rmag2      | float  |
++------------+--------+
+| rmagf2     | int    |
++------------+--------+
+
+
+Test Queries
+~~~~~~~~~~~~
+
+-  Analysis of a single object. Find an object with a particular
+   objectId
+
+   .. code:: sql
+
+     hive> select * from object where id=1;
+
+-  Select transient variable objects near a known galaxy
+
+   .. code:: sql
+
+     hive> select v.id, v.ra, v.decl from object v join object o where
+     o.id=1 and spDist(v.ra, v.decl, o.ra, o.decl)<10;
+
+-  Analysis of all objects meeting certain criteria
+
+   -  In a region select all galaxies in given area
+
+      .. code:: sql
+
+         hive> select * from object where areaSpec(ra, decl, 0, 0, 10, 10)=true;
+
+   -  For a specified patch of sky, give me the source count density of
+      unresolved sources (star like PSF)
+
+      .. code:: sql
+
+         hive> select count(id) from object where areaSpec(ra, decl, 0, 0, 10, 10)=true;
+
+-  Across entire sky. Random sample of the data
+
+   .. code:: sql
+
+      hive> select * from object tablesample(bucket 1 out of 1000 on rand());
+
+-  Analysis of objects close to other objects. Find near-neighbor
+   objects in a given region
+
+   .. code:: sql
+
+      hive> select o1.id, o2.id, spDist(o1.ra, o1.decl, o2.ra, o2.decl)
+      from object o1 join object o2
+      where areaSpec(o1.ra, o1.decl, 0, 0, 10, 10)=true
+        and spDist(o1.ra, o1.decl, o2.ra, o2.decl) < 5
+        and o1.id <> o2.id;
+
+-  spdist function definition:
+
+   .. code:: java
+
+    package com.example.hive.udf;
+    import org.apache.hadoop.hive.ql.exec.UDF;
+    import org.apache.hadoop.io.Text;
+
+    public final class SpDist extends UDF {
+
+        public double evaluate(final double ra1, final double dec1, final double ra2, final double dec2) {
+            double dra, ddec, a, b, c;
+            dra     = radians(0.5 * (ra2 - ra1));
+            ddec    = radians(0.5 * (dec2 - dec1));
+            a = Math.pow(Math.sin(ddec), 2) + Math.cos(radians(dec1))
+                                                      * Math.cos(radians(dec2))
+                                                      * Math.pow(Math.sin(dra), 2);
+            b = Math.sqrt(a);
+            c = b>1 ? 1 : b;
+            return degrees(2.0 * Math.asin(c));
+        }
+
+        private double radians(double a)    {
+            return Math.PI / 180 * a;
+        }
+
+        private double degrees(double a)    {
+            return a * 180 / Math.PI;
+        }
+
+
+    }
+
+-  areaspec function definition:
+
+   .. code:: java
+
+    package com.example.hive.udf;
+    import org.apache.hadoop.hive.ql.exec.UDF;
+    import org.apache.hadoop.io.Text;
+
+    public final class AreaSpec extends UDF {
+
+        public boolean evaluate(double ra, double decl, final double raMin, final double declMin,
+                                    final double raMax, final double declMax) {
+            return (ra > raMin && ra < raMax && decl > declMin && decl < declMax);
+        }
+    }
+
+
+Filtering by fields like variability and extendedParameter has been
+ignored for now since they are not available in the data. It should be
+trivial to add those conditions when the data is ready.
+
+Performance
+-----------
+
+Hive is built on top of Hadoop, which is a framework for running
+applications across large clusters of commodity hardware. Hadoop/Hive
+handles data-distribution and aggregation reliably; and handles
+node-failures gracefully. Both data-movement and machine vagaries are
+transparent to the user/application-developer.
+
+Single Node
+~~~~~~~~~~~
+
+Our first set of experiments were on a single machine, with a local copy
+of Hadoop running. The machine was a 64-bit Dual Core AMD Opteron,
+running at 1.8GHz, with 4GB of RAM.
+
+On a single node, loading 715K worth of data (~10,000 records with
+70bytes each) took 1.178secs. The execution time for each of the queries
+are listed below:
+
+-  Q1:
+
+   .. code:: sql
+
+     select * from object where id=1;
+
+   Time taken: 11.88 seconds
+
+-  Q2:
+
+   .. code:: sql
+
+      select v.id, v.ra, v.decl from object v join object o where
+         o.id=1 and spDist(v.ra, v.decl, o.ra, o.decl)<10;
+
+   Time taken: 19.999 seconds
+
+-  Q3:
+
+   .. code:: sql
+
+      select * from object where areaSpec(ra, decl, 0, 0, 10, 10)=true;
+
+   Time taken: 10.767 seconds
+
+-  Q4:
+
+   .. code:: sql
+
+      select count(id) from object where areaSpec(ra, decl, 0, 0,10, 10)=true;
+
+   Time taken: 20.77 seconds
+
+-  Q5:
+
+   .. code:: sql
+
+      select * from object tablesample(bucket 1 out of 1000 on rand());
+
+   Time taken: 11.665 seconds
+
+-  Q6:
+
+   .. code:: sql
+
+      select o1.id, o2.id, spDist(o1.ra, o1.decl, o2.ra, o2.decl)
+         from object o1 join object o2 where areaSpec(o1.ra, o1.decl, 0,0, 10, 10)=true
+            and spDist(o1.ra, o1.decl, o2.ra, o2.decl) < 5
+            and o1.id <> o2.id;
+
+   Time taken: 23.053 seconds
+
+Single Node w/Padded Data
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To simulate the actual data we might be indexing, we padded the schema
+with a dummy field 'pad', which ensures that the size of each record >=
+1k. The experiments below show the performance of the system with this
+dataset. The number of records were kept the same as the above
+experiments.
+
+-  Load data time: 1.450s
+
+-  Q1:
+
+   .. code:: sql
+
+      select * from object_padded where id=1;
+
+   Time taken: 12.66 seconds
+
+-  Q2:
+
+   .. code:: sql
+
+      select v.id, v.ra, v.decl from object_padded v join object_padded o where o.id=1
+         and spDist(v.ra, v.decl, o.ra,o.decl)<10;
+
+
+   Time taken: 23.929 seconds
+
+-  Q3:
+
+    .. code:: sql
+
+       select * from object_padded where areaSpec(ra, decl, 0, 0,10, 10)=true;
+
+   Time taken: 10.712 seconds
+
+-  Q4:
+
+   .. code:: sql
+
+      select count(id) from object_padded where areaSpec(ra, decl,0, 0, 10, 10)=true;
+
+   Time taken: 21.81 seconds
+
+-  Q5:
+
+   .. code:: sql
+
+      select * from object_padded tablesample(bucket 1 out of 1000 on rand());
+
+   Time taken: 10.684 seconds
+
+-  Q6:
+
+   .. code:: sql
+
+      select o1.id, o2.id, spDist(o1.ra, o1.decl, o2.ra, o2.decl)
+         from object_padded o1 join object_padded o2 where areaSpec(o1.ra, o1.decl, 0, 0, 10, 10)=true
+           and spDist(o1.ra, o1.decl, o2.ra, o2.decl) < 5 and o1.id <> o2.id;
+
+   Time taken: 22.837 seconds
+
+Padded Schema
+^^^^^^^^^^^^^
+
+::
+
+    hive> desc object_padded;
+
++------------+--------+
+| id         | int    |
++------------+--------+
+| ra         | float  |
++------------+--------+
+| decl       | float  |
++------------+--------+
+| pm_ra      | int    |
++------------+--------+
+| pm_raerr   | int    |
++------------+--------+
+| pm_decl    | int    |
++------------+--------+
+| pm_declerr | int    |
++------------+--------+
+| epoch      | float  |
++------------+--------+
+| bmag       | float  |
++------------+--------+
+| bmagf      | int    |
++------------+--------+
+| rmag       | float  |
++------------+--------+
+| rmagf      | int    |
++------------+--------+
+| bmag2      | float  |
++------------+--------+
+| bmagf2     | int    |
++------------+--------+
+| rmag2      | float  |
++------------+--------+
+| rmagf2     | int    |
++------------+--------+
+| pad        | string |
++------------+--------+
+
+3-node cluster
+~~~~~~~~~~~~~~
+
+We set up a small 3-node cluster to study the performance of Hive across
+multiple machines. The machines were of the same class as the one used
+for the single-node experiment. The settings (number of mappers/reducers
+etc.) were not tweaked, allowing Hive to determine (guess?) the default
+parameters itself. The performance of the cluster is described below:
+
+Load data time: 1.386s
+
+-  Q1:
+
+   .. code:: sql
+
+     select * from object_padded where id=1;
+
+   Time taken: 15.888 seconds
+
+-  Q2:
+
+   .. code:: sql
+
+      select v.id, v.ra, v.decl from object_padded v join
+         object_padded o where o.id=1 and spDist(v.ra, v.decl, o.ra, o.decl)<10;
+
+   Time taken: 22.117 seconds
+
+-  Q3:
+
+   .. code:: sql
+
+      select * from object_padded where areaSpec(ra, decl, 0, 0,10, 10)=true;
+
+   Time taken: 12.882 seconds
+
+-  Q4:
+
+   .. code:: sql
+
+      select count(id) from object_padded where areaSpec(ra, decl, 0, 0, 10, 10)=true;
+
+   Time taken: 19.927 seconds
+
+-  Q5:
+
+   .. code:: sql
+
+      select * from object_padded tablesample(bucket 1 out of 1000 on rand());
+
+   Time taken: 10.774 seconds
+
+-  Q6:
+
+   .. code:: sql
+
+     select o1.id, o2.id, spDist(o1.ra, o1.decl, o2.ra, o2.decl)from object_padded o1 join object_padded o2
+        where areaSpec(o1.ra,o1.decl, 0, 0, 10, 10)=true
+        and spDist(o1.ra, o1.decl, o2.ra, o2.decl) < 5 and o1.id <> o2.id;
+
+   Time taken: 19.996 seconds
+
+At the small data size (10k rows), performance is about the same for
+1-node and 3-node.
+
+--------------
+
+Larger scale testing
+--------------------
+
+I setup and collected data for different Hive architectures. I tested:
+
+a. a single node setup
+b. an 8-node setup
+c. a 64-node setup.
+
+Data setup
+~~~~~~~~~~
+
+For every architecture, I loaded the 10M rows that Daniel Wang has
+generated, and ran the queries we had identified previously
+
+The queries were restricted to queries on the Object table. No padding
+was used to increase the size of the rows to 1k.
+
+For each architecture, I ran five runs of each query, and recorded the
+average running time. I've attached some analysis to this mail.
+
+Conclusions
+~~~~~~~~~~~
+
+The main conclusions from these set of experiments are:
+
+1. Hive scales well with increase in nodes. Increasing the number of
+nodes is a configuration change, followed by a restart. I suspect
+however, that data might have to re-partitioned/re-indexed if we add
+nodes dynamically.
+
+2. Hive scales reasonably well with increase in data-size. A 1,000 fold
+increase in data-size (from 10,000 to 10,000,000 records) increased
+running times by ~30 times. More experiments will need to be done to pin
+that number down.
+
+3. Adding more nodes improves performance: the query execution time
+typically drops by 50% when we move from a 1-node setup to an 8-node
+setup. Further increases in number of nodes decreases query-execution
+time still, but not as drastically. We'll need to perform further
+experiments to tease out whether this is because of the (limited)
+data-size we're using, or whether it's because of the profile of the
+queries.
+
+4. Query-6 stands apart in that it gains almost nothing by the inclusion
+of more nodes. Analysis shows that this is primarily because most of the
+time of this query is spent in the final Reduce step, which needs to
+aggregate the join, and results in a whopping 43k records. Further
+experiments will need to be done to identify the root of the bottleneck
+- whether it's the large number of results, or whether it's because of
+significant (single) reduce step.
+
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+|                                | Q1       | Q2       | Q3       | Q4       | Q5       | Q6        |
++================================+==========+==========+==========+==========+==========+===========+
+| 1 node                         |          |          |          |          |          |           |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 1                          | 242.76   | 501.00   | 275.12   | 346.73   | 256.87   | 3868.26   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 2                          | 243.79   | 509.66   | 278.76   | 337.29   | 302.32   | 3969.76   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 3                          | 249.98   | 500.93   | 277.08   | 335.68   | 274.07   | 3828.15   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 4                          | 249.54   | 498.00   | 284.76   | 342.79   | 245.70   | 4027.38   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 5                          | 246.84   | 531.33   | 280.52   | 338.60   | 247.16   | 3629.87   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Average Execution time (sec)   | 246.58   | 508.18   | 279.25   | 340.22   | 265.23   | 3864.68   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| 8 nodes                        |          |          |          |          |          |           |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 1                          | 51.00    | 182.90   | 48.82    | 59.41    | 42.42    | 3470.91   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 2                          | 49.48    | 197.72   | 49.52    | 62.57    | 44.96    | 3546.29   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 3                          | 47.94    | 194.97   | 48.69    | 65.68    | 42.87    | 3438.10   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 4                          | 47.78    | 199.85   | 47.58    | 59.53    | 44.12    | 3495.05   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 5                          | 48.82    | 182.49   | 47.41    | 60.15    | 45.71    | 3482.68   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Average Execution time (sec)   | 49.00    | 191.59   | 48.40    | 61.47    | 44.02    | 3486.61   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| 64 nodes                       |          |          |          |          |          |           |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 1                          | 34.77    | 161.65   | 27.67    | 32.51    | 25.03    | 3499.31   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 2                          | 29.19    | 195.06   | 21.98    | 31.36    | 22.96    | 3722.20   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 3                          | 29.28    | 191.12   | 22.17    | 30.40    | 21.77    | 3582.00   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 4                          | 34.48    | 201.16   | 20.80    | 33.37    | 20.90    | 3473.59   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Run 5                          | 31.94    | 194.98   | 22.17    | 26.31    | 21.92    | 3700.11   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+| Average Execution time (sec)   | 31.93    | 188.79   | 22.96    | 30.79    | 22.52    | 3595.44   |
++--------------------------------+----------+----------+----------+----------+----------+-----------+
+
+.. figure:: /_static/HiveScalingPlot.jpg
+
+Experimentation with Hive was done by Bipin Suresh
+
+
 .. _community-consult:
 
 People/Communities We Talked To
@@ -1667,12 +2194,16 @@ Leading database researchers
 
 .. _Gearman: http://gearman.org/
 
+.. _Hadoop: http://hadoop.apache.org/
+
 References
 ----------
 
 .. bibliography:: bibliography.bib
    :encoding: latex+latin
    :style: lsst_aa
+
+.. [*] Original location of this 2010 report: https://dev.lsstcorp.org/trac/wiki/db/HiveExperiment
 
 .. note::
 

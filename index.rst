@@ -407,7 +407,7 @@ working on it.
 
 In 2012 with help from the MonetDB team we demonstrated a limited set of
 queries on a Qserv system integrated with MonetDB on the backend rather
-than MySQL. While the integration was left incomplete, the speed at
+than MySQL.\ [*]_ While the integration was left incomplete, the speed at
 which we were able to port Qserv to a new database and execute some
 queries is convincing evidence of Qserv's modularity. Because basic
 functionality was ported in one week, we are confident that porting to
@@ -500,7 +500,7 @@ check-pointing done by MR (after every “map” and every “reduce” step)
 simplifies recoverability, at the expense of performance. In contrast,
 databases are built with the optimistic assumptions that failures are
 rare: they generally checkpoint only when necessary. This has been shown
-through various studies [Pavlo09]_.
+through various studies :cite:`Pavlo:2009:CAL:1559845.1559865`.
 
 The frequent checkpointing employed by MR, in combination with limited
 set of operators discussed earlier often leads to inefficient usages of
@@ -670,7 +670,7 @@ Hadoop
 ------
 
 Hadoop is a Lucene sub-project hosted by Apache. It is open source. It
-tries to re-create the Google MR technology [Dean04]_ to provide a
+tries to re-create the Google MR technology :cite:`Dean:2008:MSD:1327452.1327492` to provide a
 framework in which parallel searches/projections/transformations (the
 *Map* phase) and aggregations/groupings/sorts/joins (the Reduce phase)
 using key-value pairs can be reliably performed over extremely large
@@ -760,12 +760,12 @@ needs in mind, and even `the Hadoop website officially states that
 attempted to compare Hadoop performance with databases. According to
 some publications and feedback from Hadoop users we talked to, Hadoop is
 about an order of magnitude more wasteful of hardware than a e.g. DB2
-[databasecolumn]_.
+:cite:`DeWitt:2008:MapReduce` :cite:`DeWitt:2008:MapReduceII`.
 
 Hadoop has a large community supporting it; e.g., over 300 people
 attended the first Hadoop summit (in 2008). It is used in production by
-many organizations, including Facebook, Yahoo!, and Amazon Facebook
-[hadoop-users]_.
+`many organizations <https://wiki.apache.org/hadoop/PoweredBy>`_,
+including Facebook, Yahoo!, and Amazon Facebook.
 It is also commercially supported by Cloudera. Hadoop Summit 2011 was
 attended by more than 1,600 people from more than 400 companies.
 
@@ -802,7 +802,7 @@ Bigtable :cite:`Chang:2008:BDS:1365815.1365816`, and built on top of the Hadoop 
 at incremental updates and column key lookups, however, similarly to
 plain MR, it offers no mechanism to do joins – a typical solution used
 by most users is to denormalize data. `HBase`_ is becoming increasingly
-more popular at Facebook [nosqlpedia]_. It is supported commercially by
+more popular at Facebook :cite:`Peschka:2010:HBase`. It is supported commercially by
 Cloudera, Datameer and `Hadapt`_.
 
 .. _mr-pig-latin:
@@ -948,7 +948,8 @@ In alphabetical order.
 Actian
 ------
 
-Actian, formerly known as Ingres [Actian]_ provides analytical services
+Actian, `formerly known as Ingres <https://web.archive.org/web/20110925211157/http://www.actian.com/ingres-becomes-actian>`_
+provides analytical services
 through Vectorwise, acquired from CWI in 2010. Primary speed ups rely on
 exploiting data level parallelism (rather than tuple-at-a-time
 processing). Main disadvantage from LSST perspective: it is a
@@ -973,16 +974,16 @@ their system does not support compression and stores data in strings,
 which may not be efficient for LSST catalog data.
 
 A large fraction of the code is already available as open source for
-academia and non-profit organizations under the name “Globals” [Cache]_.
+academia and non-profit organizations under the name “Globals” :cite:`Intersystems:2008:Globals`.
 
 .. _sec-citrusdb:
 
 CitusDB
 -------
 
-CitusDB is a new commercial distributed database built on top on
+`CitusDB`_ is a new commercial distributed database built on top on
 PostgreSQL. It supports joins between one large and multiple small
-tables [CitusDB]_ (star schema) – this is insufficient for LSST.
+tables (star schema) – this is insufficient for LSST.
 
 .. _db2:
 
@@ -1152,8 +1153,9 @@ InfiniDB
 InfiniDB is an open source, columnar DBMS consisting of a MySQL front
 end and a columnar storage engine, build and supported by Calpont.
 Calpont introduced their system at the MySQL 2008 User Conference
-[Calpont08]_, and more officially announced it in late Oct 2009
-[Calpont09]_. It implements true MPP, shared nothing (or shared-all,
+:cite:`Tommaney:2009:MySQLConf`, and more officially `announced it in late Oct 2009
+<https://www.prlog.org/10390427-calpont-launches-open-source-analytics-database-offering.html>`_.
+It implements true MPP, shared nothing (or shared-all,
 depending how it is configured) DBMS. It allows data to be range-based
 horizontal partitioning, partitions can be distributed across many nodes
 (overlapping partitions are not supported though). It allows to run
@@ -1212,7 +1214,7 @@ There are several notable open-source forks of MySQL:
   component of web companies and it is one of the components of the full
   stack of products they offer. Oracle has doubled the number of MySQL
   engineers and tripled the number of MySQL QA staff over the past year
-  [Ulin13]_, and the community seems to believe Oracle is truly committed now
+  :cite:`Ulin:2013:Percona`, and the community seems to believe Oracle is truly committed now
   to support MySQL. The main “problem” from LSST perspective is that
   Oracle is putting all the effort into InnoDB engine only (the engine
   used by web companies including Facebook and Google), while the MyISAM
@@ -1291,7 +1293,7 @@ TokuDB
 ~~~~~~
 
 Tokutek built a specialized engine, called TokuDB. The engine relies on
-new indexing method, called Fractal Tree indexes [TokuDB]_, this new type of
+new indexing method, called Fractal Tree indexes :cite:`TokuDB:2013:White`, this new type of
 an index primarily increases speed of inserts and data replication.
 While its benefits are not obvious for our data access center, rapid
 inserts might be useful for Level 1 data sets (Alert Production). We
@@ -1316,8 +1318,7 @@ Each SPU consists of a CPU, memory, disk drive and an FPGA chip that
 filters records as they stream off the disk. See
 https://www-01.ibm.com/software/data/netezza/ for more information.
 
-According to some rumours, see e.g.
-http://www.dbms2.com/2009/09/03/teradata-and-netezza-are-doing-mapreduce-too/,
+According to some rumours, see e.g. :cite:`Monash:2009:teradata`,
 Netezza is planning to support map/reduce.
 
 Pros:
@@ -1389,9 +1390,10 @@ installation (as of late 2007). Skype is planning to use PostgreSQL to
 scale up to billions of users, by introducing a layer of proxy servers
 which will hash SQL requests to an appropriate PostgreSQL database
 server, but this is an OLTP usage that supports immense volumes of small
-queries [HighScalability08]_.
+queries :cite:`Hoff:2008:Skype`.
 
-PostgreSQL also offers good GIS support [PostGIS]_. We are collaborating
+PostgreSQL also offers `good GIS support <http://postgis.refractions.net/>`_ :cite:`Obe:2015:PA:2834495`.
+We are collaborating
 with the main authors of this extension.
 
 One of the main weaknesses of PostgreSQL is a less-developed support
@@ -1524,9 +1526,10 @@ be fixed in future releases. Star joins in the MPP environment are made
 possible by replicating dimension tables and partitioning the fact
 table.
 
-In 2009, a Vertica Hadoop connector was implemented. This allows Hadoop
+In 2009, a `Vertica Hadoop connector was implemented <https://web.archive.org/web/20091126154136/http://www.vertica.com/MapReduce>`_.
+This allows Hadoop
 developers to push down map operators to Vertica database, stream Reduce
-operations into Vertica [Vertica]_, and move data between the two
+operations into Vertica, and move data between the two
 environments.
 
 Cons:
@@ -2175,6 +2178,8 @@ Leading database researchers
 
 .. _XLDB: http://www.xldb.org
 
+.. _CitusDB: https://www.citusdata.com
+
 .. _Hortonworks: https://hortonworks.com/
 
 .. _Hadapt: http://www.teradata.com/products-and-services/Presto/Presto-Download
@@ -2205,6 +2210,9 @@ References
 .. bibliography:: bibliography.bib
    :encoding: latex+latin
    :style: lsst_aa
+
+.. [*] A private discussion of this experiment is available at https://listserv.lsstcorp.org/mailman/private/lsst-data/2012-November/310.html.
+       The patches required for the MonetDB test can be found at https://github.com/lsst/qserv/tree/tickets/2426
 
 .. [*] Original location of this 2010 report: https://dev.lsstcorp.org/trac/wiki/db/HiveExperiment
 

@@ -45,6 +45,14 @@
 
 .. Add content below. Do not include the document title.
 
+.. note::
+
+  This tech note contains technology investigations done in the period 2007 to 2013.
+  The first three sections were originally published in :cite:`Document-8256` and subsequently :cite:`LDM-135` (`see DocuShare version 18 <https://docushare.lsstcorp.org/docushare/dsweb/Get/Version-24508/LDM-135.pdf>`_).
+  `Document LDM-135 <https://ls.st/LDM-135>`_ no longer contains the historical background and the content has been migrated to different locations.
+  :ref:`experiments-on-hive-trac` is originally from `LSST Trac`_ and was referenced from LDM-135.
+
+
 .. _potential-solutions:
 
 Potential Solutions - Research
@@ -2204,6 +2212,8 @@ Leading database researchers
 
 .. _Hadoop: http://hadoop.apache.org/
 
+.. _LSST Trac: https://dev.lsstcorp.org/trac/wiki
+
 References
 ==========
 
@@ -2215,8 +2225,3 @@ References
        The patches required for the MonetDB test can be found at https://github.com/lsst/qserv/tree/tickets/2426
 
 .. [*] Original location of this 2010 report: https://dev.lsstcorp.org/trac/wiki/db/HiveExperiment
-
-.. note::
-
-   This document was originally published as sections of :cite:`LDM-135`.
-   An earlier form of sections :ref:`db-solutions` and :ref:`mr-solutions` can be found in :cite:`Document-8256`.

@@ -36,7 +36,7 @@ last_revised: '2013-10-10'
 # doi: 10.5281/zenodo.#####
 
 # Copyright statement
-copyright: '2013, AURA/LSST'
+copyright: '2013, 2017 AURA/LSST'
 
 # Description. A short, 1-2 sentence statemement used by document indices.
 description: 'Technologies that were investigated whilst determining the best approach for LSST'

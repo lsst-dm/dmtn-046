@@ -974,8 +974,10 @@ multi-dimensional arrays, and interestingly, supports overlaps. We are
 in discussions with the company—we have been discussing Caché with
 Stephen Angevine since early 2007, and met with Steven McGlothlin in
 June 2011. We also discussed Caché with William O'Mullane from the ESA's
-Gaia mission, an astronomical survey that selected Caché as their
-underlying database store in 2010 [25, 26]). InterSystems offers free
+Gaia mission :cite:`2016A&A..595A..1G`, an astronomical survey that `selected Caché <http://www.intersystems.com/library/library-item/european-space-agency-chooses-intersystems-cach-database-for-gaia-mission-to-map-milky-way/>`_
+as their
+underlying database store in 2010 :cite:`Zicaro:2011:ODBMS`).
+InterSystems offers free
 licensing for all development and research, for academic and non-profit
 research, plus support contracts with competitive pricing. However,
 their system does not support compression and stores data in strings,

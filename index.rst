@@ -1496,8 +1496,8 @@ speed interconnect(Infiniband).
 Sybase IQ
 ---------
 
-`Sybase IQ`_ is a commercial columnar database product by Sybase Corp.
-`Sybase IQ`_ utilizes a “shared-everything” approach that designed to
+`SybaseIQ`_ (now SAP IQ) is a commercial columnar database product by Sybase Corp.
+`SybaseIQ`_ utilizes a “shared-everything” approach that designed to
 provide graceful load-balancing. We heard opinions that most of the good
 talent has left the company; thus it is unlikely it will be a major
 database player.
@@ -2208,7 +2208,7 @@ Leading database researchers
 
 .. _Drizzle: https://en.wikipedia.org/wiki/Drizzle_(database_server)
 
-.. _SybaseIQ: http://www.sybase.com/products/datawarehousing/sybaseiq
+.. _SybaseIQ: https://en.wikipedia.org/wiki/Sybase_IQ
 
 .. _Gearman: http://gearman.org/
 
